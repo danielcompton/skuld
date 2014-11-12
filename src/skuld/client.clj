@@ -24,7 +24,7 @@
                 :net
                 (net/sync-req! (list (peer client)) opts msg)
                 first)]
-    (when (nil? res)
+    (when-not res
       (throw (RuntimeException. "request timed out.")))
     (when-let [error (:error res)]
       (throw (RuntimeException. (str "server error: " error))))

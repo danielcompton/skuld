@@ -63,7 +63,7 @@
   (dorun (pmap (comp politics/shutdown! :politics) *nodes*))
 
   (elect! *nodes*)
-  
+
   ; Enqueue something and claim it.
   (let [id       (client/enqueue! *client* {:w 3} {:queue "queue13" :data "meow"})
         deadline (+ (flake/linear-time) 20000)
@@ -125,7 +125,7 @@
                      (map vnodes)
                      (map vals)
                      (map (partial mapcat vnode/tasks))
-                     (map (partial some #(= id (:id %)))) 
+                     (map (partial some #(= id (:id %))))
                      (filter true?)
                      count)))
 

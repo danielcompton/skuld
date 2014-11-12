@@ -61,7 +61,7 @@
                          (.close ^Closeable level)
                          false)))))
 
-  
+
   (wipe! [db]
     (locking db
       (when @running
@@ -74,7 +74,7 @@
 (defn open
   "Start a database service. Initializes the local DB storage and binds the
   database for further calls. Options:
-  
+
   :host
   :port
   :partition

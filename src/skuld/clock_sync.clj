@@ -19,7 +19,7 @@
                                   "is"
                                   delta
                                   "milliseconds!")))
-                        {})))                            
+                        {})))
 
   (let [running (promise)]
     ; Periodically emit heartbeats to peers

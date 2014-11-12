@@ -1,11 +1,11 @@
 (ns skuld.flake
   "ID generation. Flake IDs are 160 bits, and comprise:
-  
+
   [64 bits | Timestamp, in milliseconds since the epoch]
   [32 bits | a per-process counter, reset each millisecond]
   [48 bits | a host identifier]
   [16 bits | the process ID]
-  
+
   Note that the timestamp is not Posix time or UTC time. Instead we use the
   JVM's nanoTime, which is a linear time source over intervals smaller than
   ~292 years, and use it to compute an offset from the POSIX time as measured
@@ -22,7 +22,7 @@
            (java.security MessageDigest)
            (java.util Arrays)
            (java.util.concurrent.atomic AtomicInteger)))
-           
+
 (defonce initialized (atom false))
 
 ; Cached state
@@ -67,7 +67,7 @@
   system. Takes n samples."
   [n]
   (-> (->> (repeatedly time-offset-estimate)
-           (map double) 
+           (map double)
            (take n)
            (reduce +))
       (/ n)
@@ -94,12 +94,11 @@
   "Initializes the flake generator state."
   []
   (locking initialized
-    (if (false? @initialized)
-      (do
-        (def ^long  time-offset*   (mean-time-offset 10))
-        (def ^"[B"  node-fragment* (node-fragment))
+    (when-not @initialized
+      (def ^long time-offset* (mean-time-offset 10))
+      (def ^"[B" node-fragment* (node-fragment))
 
-        (reset! initialized true)))))
+      (reset! initialized true))))
 
 (defn ^long count!
   "Increments and gets the count for a given time."
@@ -117,7 +116,7 @@
   []
   (let [id (try
              (let [t (linear-time)
-                   c (count! t)
+                   c (count! t)                             ;;TODO why is c not used?
                    b (ByteBuffer/allocate 20)]
                (.putLong b t)
                (.putInt b (count! t))

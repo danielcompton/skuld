@@ -119,9 +119,9 @@
          (catch java.lang.AssertionError e
            (let [err {:error (.getMessage e)}]
              (POST req err bad-request))))
-              ;; Missing parameters, i.e. POST body
-              (let [err {:error "Missing required params"}]
-                (POST req err bad-request))))
+    ;; Missing parameters, i.e. POST body
+    (let [err {:error "Missing required params"}]
+      (POST req err bad-request))))
 
 (defn- list-tasks
   "Like `node/list-tasks`, but wrapped around an HTTP request."
@@ -195,7 +195,7 @@
 (defn service
   "Given a node and port, constructs a Jetty instance."
   [node port]
-  (info "Starting HTTP server on" (str (:host node) ":" port))
+  (infof "Starting HTTP server on %s:%d" (:host node) port)
   (let [handler (->
                   (make-handler node)
                   (wrap-json-body-safe {:keywords? true})

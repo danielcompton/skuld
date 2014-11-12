@@ -41,8 +41,7 @@
 (defn decode
   "Deserialize bytes to an object."
   [^bytes bytes]
-  (if (or (nil? bytes) (= 0 (alength bytes)))
-    nil
+  (when-not (or (nil? bytes) (zero? (alength bytes)))
     (with-open [s (ByteArrayInputStream. bytes)
                 i (InputStreamReader. s)
                 r (PushbackReader. i)]
@@ -78,11 +77,11 @@
   ([^CuratorFramework curator path]
    (.. curator create creatingParentsIfNeeded (forPath path)))
   ([^CuratorFramework curator path data]
-   (.. curator create creatingParentsIfNeeded (forPath (encode data)))))
+   (.. curator create creatingParentsIfNeeded (forPath path (encode data)))))
 
 (defn delete!
   "Ensures a znode does not exist. Idempotent--will not throw if the znode
-  doesn't exist already."
+  doesn't exist."
   ([^CuratorFramework curator path]
    (try
      (.. curator delete (forPath path))
@@ -315,7 +314,7 @@
   shared-atom does not use lock promotion; all writes are optimistic with
   exponential backoff. Reads are cheaper because they can use a locally cached
   value. Also unlike distributed-atom, shared-atom is watchable for changes.
-  
+
   You must explicitly shut down a shared-atom using shutdown-shared."
   [^CuratorFramework curator path initial-value]
 
@@ -344,7 +343,7 @@
 
     ; Do an initial read
     (refresh-shared-atom! a)
-    
+
     a))
 
 (defn swap!!

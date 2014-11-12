@@ -11,7 +11,7 @@
       (loop []
         (try
           (when-let [vnodes (-> vnodes deref vals)]
-            (->> vnodes 
+            (->> vnodes
                  shuffle
                  (pmap
                    (fn [vnode]

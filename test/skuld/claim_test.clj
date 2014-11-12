@@ -35,15 +35,15 @@
   (with-redefs [task/clock-skew-buffer 500]
     (let [id (client/enqueue! *client* {:w 3} {:queue "queue2" :data "maus"})]
       (is (= id (:id (client/claim! *client* "queue2" 1000))))
-      
+
       ; Can't reclaim, because it's already claimed
       (is (nil? (client/claim! *client* "queue2" 1000)))
-      
+
       ; Can't reclaim after 1000ms because clock skew buffer still holds
       (Thread/sleep 1001)
       (is (nil? (client/claim! *client* "queue2" 1000)))
-      
-      ; But after the buffer has elapsed, good to go. 
+
+      ; But after the buffer has elapsed, good to go.
       (Thread/sleep 1500)
 
       (let [t (client/claim! *client* "queue2" 1000)]

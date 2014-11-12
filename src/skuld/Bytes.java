@@ -39,7 +39,7 @@ public class Bytes implements Comparable {
       throw new IllegalArgumentException("Can't compare Bytes to" +
           o.toString());
     }
-    
+
     return UnsignedBytes.lexicographicalComparator().
       compare(bytes, ((Bytes) o).bytes);
   }

@@ -243,7 +243,7 @@
   (let [n 10]
     (dotimes [i n]
       (client/enqueue! *client* {:w 3} {:queue "queue7" :data "sup"}))
-   
+
     ; List
     (let [tasks (client/list-tasks *client*)]
       (is (= n (count tasks)))

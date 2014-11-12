@@ -40,3 +40,28 @@
     (testing "ternary"
       (is (= -1 (compare+ a b :b :b :a)))
       (is (= -1 (compare+ a b :b :a :c))))))
+
+(deftest majority-test
+  (are [num-nodes majority-num]
+    (is (= majority-num (majority num-nodes)))
+    0 0
+    1 1
+    2 2
+    3 2
+    4 3
+    5 3
+    10 6
+    15 8))
+
+(deftest majority-value-test
+  (are [value values]
+    (is (= value (majority-value values)))
+    nil []
+    nil [:a :b]
+    :a  [:a :a :b]
+    nil [:a :b :c]))
+
+(deftest assocv-test
+  (are [res vec idx val]
+    (is (= res (assocv vec idx val)))
+    [:b nil nil nil nil :a] [:b] 5 :a))

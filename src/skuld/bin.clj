@@ -64,7 +64,7 @@
 (defn controller [& args]
   (let [[opts _ _] (apply cli args node-spec)
         controller (node/controller opts)]
-      
+
     (.addShutdownHook (Runtime/getRuntime)
                       (Thread. (bound-fn []
                                  (node/shutdown! controller))))

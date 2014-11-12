@@ -1,11 +1,11 @@
 (ns skuld.queue
   "A vnode service which actually provides queuing semantics. You know,
   ordering, priorities, etc.
-  
+
   Our general strategy with this queue is to be approximately consistent. If
   claim fails, come back and get another task. If a task is missing from this
   queue, AAE will recover it when it does a scan over the DB.
-  
+
   There's one set of queues per vnode. Each named queue is a rough approximation
   of all tasks that could be claimed on that vnode."
   (:import (java.util.concurrent TimeUnit

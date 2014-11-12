@@ -126,6 +126,6 @@
           (.start)))
       (.start))
     )
-  (set-level :info))
+  (set-level :warn))
 
 (init)

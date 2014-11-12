@@ -18,7 +18,7 @@
 
 (defn path
   "Constructs a path name for storing data in a vnode. Options:
-  
+
   :host
   :port
   :partition

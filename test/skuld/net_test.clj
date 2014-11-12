@@ -127,7 +127,7 @@
       (req! a [b] {:r 1 :timeout 1000} {:hi :there}
             [responses]
             (deliver rs responses))
-      
+
       (is (= [] @rs))
       @done
       (Thread/sleep 100)

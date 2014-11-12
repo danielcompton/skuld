@@ -35,7 +35,7 @@
   "Log a message with context"
   [node & args]
   `(let [node-prefix# (trace-log-prefix ~node)]
-     (info node-prefix# ~@args)))
+     (trace node-prefix# ~@args)))
 
 ;;
 
@@ -45,7 +45,7 @@
   @(:vnodes node))
 
 (defn vnode
-  "Returns a particular vnode for a node."
+  "Returns the vnode for a partition on a node."
   [node partition-id]
   (get (vnodes node) partition-id))
 
@@ -113,7 +113,7 @@
 (defn preflist
   "Returns a set of nodes responsible for a Bytes id."
   [node ^Bytes id]
-  (assert (not (nil? id)))
+  (assert (not (nil? id))) ;; TODO: some? in clojure 1.6
   (peers node (partition-name node id)))
 
 (defn enqueue!
@@ -335,12 +335,11 @@
         (if-not peer
           ; Done
           {}
-          (do
-            (let [[response] (net/sync-req! (:net node) [peer] {}
-                                            (assoc msg :type :claim-local))]
-              (if (:task response)
-                response
-                (recur peers))))))))
+          (let [[response] (net/sync-req! (:net node) [peer] {}
+                                          (assoc msg :type :claim-local))]
+            (if (:task response)
+              response
+              (recur peers)))))))
 
 (defn request-claim!
   "Accepts a request from a leader to claim a given task."
@@ -356,7 +355,7 @@
   "Completes a given task on a local vnode."
   [node msg]
   (let [part (->> msg :task-id (partition-name node))]
-    (if-let [vnode (vnode node part)] 
+    (if-let [vnode (vnode node part)]
       (do (vnode/complete! vnode msg)
           {:w 1})
       {:error (str "I don't have partition" part "for task" (:task-id msg))})))
@@ -600,7 +599,7 @@
 
 (defn controller
   "Creates a new controller, with the given options.
-  
+
   :zookeeper    \"localhost:2181\"
   :cluster      :skuld
   :host         \"127.0.0.1\"

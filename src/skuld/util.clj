@@ -28,7 +28,7 @@
 (defn- sorted-interleave- [key-fn ^PriorityQueue heap]
   (lazy-seq
     (loop [chunk-idx 0, buf (chunk-buffer 32)]
-      (if (.isEmpty heap) 
+      (if (.isEmpty heap)
         (chunk-cons (chunk buf) nil)
         (let [^SeqContainer container (.poll heap)]
           (chunk-append buf (first (.s container)))
@@ -59,6 +59,7 @@
 (defn majority
   "For N replicas, what would consititute a majority?"
   [n]
+  {:pre [(not (neg? n))]}
   (if (zero? n)
     0
     (int (Math/floor (inc (/ n 2))))))

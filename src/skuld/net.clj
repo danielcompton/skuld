@@ -8,7 +8,7 @@
             [hexdump.core :as hex]
             [skuld.util :refer [fress-read fress-write]])
   (:use clojure.tools.logging
-        skuld.util) 
+        skuld.util)
   (:import (com.aphyr.skuld Bytes)
            (java.io ByteArrayInputStream
                     DataInputStream
@@ -330,9 +330,9 @@
 (defn ^Request new-request
   "Constructs a new Request. Automatically generates an ID, and computes the
   max-time by adding the timeout to the current time.
-  
+
   Options:
-  
+
   :debug    Debugging info
   :timeout  Milliseconds to wait
   :r        Number of responses to await
@@ -356,8 +356,7 @@
   :f"
   [node peers opts msg]
   (assert (started? node))
-  (let [r   (majority (count peers))
-        req (new-request (assoc opts :r (or (:r opts)
+  (let [req (new-request (assoc opts :r (or (:r opts)
                                             (majority (count peers)))))
         id  (.id req)
         msg (assoc msg :request-id id)]
@@ -378,7 +377,7 @@
 
   (req! node some-peers {:timeout 3 :r 2}
     {:type :anti-entropy :keys [a b c]}
-  
+
     [responses]
     (assert (= 3 responses))
     (doseq [r responses]
@@ -452,7 +451,7 @@
 ; Node constructor
 (defn node
   "Creates a new network node. Options:
-  
+
   :host
   :port
   :server? Should we be a server as well? (default true)
@@ -487,7 +486,7 @@
     (when-not (started? node)
       (let [handler (compile-handler (deref (:handlers node)))]
         (reset! (:handler node) handler)
-        (when (:server? node) 
+        (when (:server? node)
           (reset! (:server node) (server node)))
         (reset! (:client node) (client node))
         (reset! (:gc     node) (periodically-gc-requests! (:requests node)))

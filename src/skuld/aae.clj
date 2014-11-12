@@ -19,7 +19,7 @@
   messages merged, nil otherwise."
   [vnode message]
   (when message
-    (dorun (map (partial vnode/merge-task! vnode) (:updates message)))
+    (doseq [update (:updates message)] (vnode/merge-task! vnode update))
     true))
 
 (defn vnode
@@ -52,9 +52,8 @@
   "Given {:updates ...} from requester, applies them to local vnode and returns
   {}."
   [vnodes msg]
-  (or
-    (and (merge-updates! (vnode vnodes msg) msg)
-         {})
+  (if (merge-updates! (vnode vnodes msg) msg)
+    {}
     (throw (RuntimeException. "expected a :updates key."))))
 
 (defn handler
@@ -90,13 +89,13 @@
   ; Get remote tree
   (when-let [response (-> vnode
                           :net
-                          (net/sync-req! 
+                          (net/sync-req!
                             [peer]
                             {}
                             {:type :aae-tree
                              :partition (:partition vnode)})
                           first)]
-                             
+
     ; Compute diffs
     (let [remote-tree (merkle/map->node (:tree response))
           updates (merkle/diff (vnode/tasks vnode)
@@ -118,7 +117,7 @@
   [net router vnode]
   (let [self (vnode/net-id vnode)
         peers (set (vnode/peers vnode))]
-    (dorun (map (partial sync-from! vnode) (disj peers self)))))
+    (doseq [peer (disj peers self)] (sync-from! vnode peer))))
 
 (defn initiator
   "Periodically initiates sync with peers."
@@ -128,14 +127,10 @@
       (when (deref running 10000 true)
         (loop []
           (try
-            (->> vnodes
-                 deref
-                 vals
-                 (map (partial sync-vnode! net router))
-                 dorun)
+            (doseq [vnode (vals @vnodes)]
+              (sync-vnode! net router vnode))
             (catch Throwable t
               (warn t "aae caught")))
-
           (when (deref running 10000 true)
             (recur)))))
     running))

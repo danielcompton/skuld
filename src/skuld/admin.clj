@@ -34,7 +34,7 @@
   ; Create cluster itself
   (helix/add-cluster (:helix admin)
                      (:cluster admin))
-  
+
   ; Set FSM
   (helix/add-fsm-definition (:helix admin)
                             (:cluster admin)

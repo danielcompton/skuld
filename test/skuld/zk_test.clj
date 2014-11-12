@@ -7,7 +7,7 @@
   "Evaluates body with a zookeeper server running, and the connect string bound
   to the given variable. Ensures the ZK server is shut down at the end of the
   body. Example:
-  
+
   (with-zk [zk-string]
     (connect-to zk-string)
     ...)"
